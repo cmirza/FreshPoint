@@ -1,0 +1,42 @@
+{% load static %}
+<title>FreshPoint</title>
+<style>
+body {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #61bb46;
+}
+#banner {
+    width: 60%;
+    margin: 10px auto;
+    background: #FFFFFF;
+    font-size: 1.25em;
+    padding: 5px 5px 5px 5px;
+    box-shadow: 2px 2px;
+}
+.container {
+    width: 60%;
+    margin: 10px auto;
+    padding: 5px 5px 5px 5px;
+    text-align: center;
+    background: #FFFFFF;
+    box-shadow: 2px 2px;
+    font-size: .7em;
+
+}
+</style>
+<header id="banner">
+    <h1><img src="{% static 'FreshPoint/logo.svg'%}" alt="FreshPoint"></h1>
+</header>
+<div class="container">
+    Enter your zip code: <input type="text" name="url_string"/>
+</div>
+<div class="container">
+    <iframe src="//www.google.com/maps/embed/v1/place?q=97201
+          &zoom=7
+          &key=AIzaSyDnW3f68GZXmNHpVpY5SNi4oFejgilgtio" width="600" height="450" frameborder="0" style="border:0">
+    </iframe>
+</div>
+<div class="container">
+    <p>Hello World.</p>
+</div>
