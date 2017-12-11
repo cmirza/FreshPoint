@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/GreenPoint.iml" filepath="$PROJECT_DIR$/.idea/GreenPoint.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FreshPoint.iml" filepath="$PROJECT_DIR$/.idea/FreshPoint.iml" />
     </modules>
   </component>
 </project>
