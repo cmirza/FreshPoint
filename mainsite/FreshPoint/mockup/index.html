@@ -1,0 +1,68 @@
+<title>FreshPoint</title>
+<style>
+body {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #61bb46;
+}
+#banner {
+    width: 60%;
+    margin: 10px auto;
+    background: #FFFFFF;
+    font-size: 1.25em;
+    padding: 5px 5px 5px 5px;
+    box-shadow: 2px 2px;
+}
+#zip_input {
+    width: 60%;
+    margin: 10px auto;
+    padding: 5px 5px 5px 5px;
+    text-align: center;
+    background: #FFFFFF;
+    box-shadow: 2px 2px;
+    font-size: .7em;    
+}
+.container {
+    width: 60%;
+    margin: 10px auto;
+    padding: 5px 5px 5px 5px;
+    text-align: center;
+    background: #FFFFFF;
+    box-shadow: 2px 2px;
+    font-size: .7em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.vegbox {
+    width: 30%;
+    margin: 10px auto;
+    padding: 5px 5px 5px 5px;
+    text-align: center;
+    background: #eafad7;
+    box-shadow: 2px 2px;
+    display: inline;
+}
+.img-circle {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    box-shadow: 0 8px 6px -6px #000;
+}
+</style>
+<header id="banner">
+    <h1><img src="logo.svg" alt="FreshPoint"></h1>
+</header>
+<div id="zip_input">
+    Enter your zip code: <input type="text" name="url_string"/>
+</div>
+<div class="container">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932596.123585405!2d-122.82672896258157!3d44.12743959666217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54936e7c9b9f6a55%3A0x7d4c65db7a0bb876!2sOregon!5e0!3m2!1sen!2sus!4v1513030546188" width="600" height="450" frameborder="0" style="border:0"></iframe>
+</div>
+<div class="container">
+    <div class="vegbox"><b>Bok Choy</b><br><br><img class="img-circle" src="bok_choy.jpg"><br><br>Washington County, 31mi Away</div>
+    <div class="vegbox"><b>Cucumber</b><br><br><img class="img-circle" src="cucumber.jpg"><br><br>Linn County, 57mi Away</div>
+    <div class="vegbox"><b>Garlic</b><br><br><img class="img-circle" src="garlic.jpg"><br><br>Coos County, 63mi Away</div>
+    <div class="vegbox"><b>Mushroom</b><br><br><img class="img-circle" src="mushroom.jpg"><br><br>Kalamath County, 83mi Away</div>
+</div>
