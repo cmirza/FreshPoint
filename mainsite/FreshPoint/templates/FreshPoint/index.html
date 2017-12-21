@@ -1,33 +1,13 @@
 {% load static %}
-<title>FreshPoint</title>
-<style>
-body {
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #61bb46;
-}
-#banner {
-    width: 60%;
-    margin: 10px auto;
-    background: #FFFFFF;
-    font-size: 1.25em;
-    padding: 5px 5px 5px 5px;
-    box-shadow: 2px 2px;
-}
-.container {
-    width: 60%;
-    margin: 10px auto;
-    padding: 5px 5px 5px 5px;
-    text-align: center;
-    background: #FFFFFF;
-    box-shadow: 2px 2px;
-    font-size: .7em;
 
-}
-</style>
+<title>FreshPoint</title>
+<link rel="stylesheet" href="{% static 'FreshPoint/style.css' %}" type="text/css"/>
 <header id="banner">
     <h1><img src="{% static 'FreshPoint/logo.svg'%}" alt="FreshPoint"></h1>
 </header>
-<div class="container">
-    Enter your zip code: <input type="text" name="url_string"/>
+<div class="container" id="zip_input">
+    <form action="{% url 'FreshPoint:results' %}" method="post">
+    {% csrf_token %}
+    Enter your zip code: <input type="text" name="input_zip" /><button type="submit">Go</button>
+    </form>
 </div>
