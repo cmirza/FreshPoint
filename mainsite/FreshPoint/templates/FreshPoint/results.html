@@ -1,0 +1,18 @@
+{% load static %}
+<title>FreshPoint</title>
+<link rel="stylesheet" href="{% static 'FreshPoint/style.css' %}" type="text/css"/>
+<header id="banner">
+    <h1><img src="{% static 'FreshPoint/logo.svg'%}" alt="FreshPoint"></h1>
+</header>
+<div id="zip_input" class="container">
+    <form action="{% url 'FreshPoint:results' %}" method="post">
+    {% csrf_token %}
+    Enter your zip code: <input type="text" name="input_zip" /><button type="submit">Go</button>
+    </form>
+    <span>Results for {{ user_state_verbose }}</span>
+</div>
+<div id="results" class="container">
+    {% for veg in user_veg_detail %}
+    <div id="vegetable"><b>{{ veg.veg_name }}</b></br><img src="/static/FreshPoint/{{ veg.veg_image}}-190x100.jpg" alt="{{ veg.veg_name }}"></div></br>
+    {% endfor %}
+</div>
