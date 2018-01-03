@@ -1,4 +1,26 @@
 {% load static %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+  google.charts.load('current', {
+    'packages':['geochart'],
+    'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+  });
+  google.charts.setOnLoadCallback(drawStatesMap);
+
+  let grow_states = {{ current_states|safe }};
+
+  function drawStatesMap() {
+      var data = google.visualization.arrayToDataTable(grow_states);
+      var options = {
+      region: 'US',
+      displayMode: 'regions',
+      resolution: 'provinces',
+      enableRegionInteractivity: false
+    };
+    var chart = new google.visualization.GeoChart(document.getElementById('states_div'));
+    chart.draw(data, options);
+  }
+</script>
 <title>FreshPoint</title>
 <link rel="stylesheet" href="{% static 'FreshPoint/style.css' %}" type="text/css"/>
 <header id="banner">
@@ -7,11 +29,28 @@
 <div id="zip_input" class="container">
     <form action="{% url 'FreshPoint:results' %}" method="post">
     {% csrf_token %}
-    Enter your zip code: <input type="text" name="input_zip" /><button type="submit">Go</button>
+    Enter your zip code: <input type="text" name="input_zip" id="input_zip"/><button type="submit" id="zip_go" disabled>Go</button>
     </form>
 </div>
 <div id="detail" class="container">
-    <b>{{ veg_detail.veg_name }}</b></br></br>
-    <img src="/static/FreshPoint/{{ veg_detail.veg_image}}-190x100.jpg" alt="{{ veg_detail.veg_name }}"></br></br>
-    {{ veg_detail.veg_desc }}</br>
+    <h2>{{ veg_detail.veg_name }}</h2></br></br>
+    <img src="/static/FreshPoint/{{ veg_detail.veg_image}}-190x100.jpg" alt="{{ veg_detail.veg_name }}"></br></br></br>
+    {{ veg_detail.veg_desc }}</br></br>
+    It is currently being harvested in these parts of the country:
+    <div id="states_div" style="width: 320px; height: 240px;"></div>
 </div>
+<script>
+    let zip_code = document.querySelector('#input_zip');
+    let zip_go = document.querySelector('#zip_go');
+
+    zip_code.oninput = function() {
+        let pattern = /^[0-9]{5}$/;
+        if (!pattern.test(this.value)) {
+            this.style.outline = '2px solid red';
+            zip_go.disabled = true;
+        } else {
+            this.style.outline = 'none';
+            zip_go.disabled = false;
+        }
+        };
+</script>

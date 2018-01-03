@@ -7,6 +7,12 @@ body {
 form {
     margin-bottom: 0;
 }
+h2 {
+    margin-bottom: 0;
+}
+h3 {
+    margin-bottom: 0;
+}
 hr {
     border: none;
     color:#000000;
@@ -27,7 +33,7 @@ button {
 .container {
     width: 60%;
     margin: 10px auto;
-    padding: 5px 5px 5px 5px;
+    padding: 5px 5px 15px 5px;
     text-align: center;
     background: #FFFFFF;
     box-shadow: 2px 2px;
@@ -47,6 +53,9 @@ button {
     justify-content: center;
 }
 #vegetable {
-    border: 1px solid black;
     margin: 5px 5px 5px 5px;
+}
+#states_div {
+    margin: 0 auto;
+    width: 100px;
 }
