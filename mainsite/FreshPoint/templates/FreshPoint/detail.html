@@ -9,11 +9,9 @@
     {% csrf_token %}
     Enter your zip code: <input type="text" name="input_zip" /><button type="submit">Go</button>
     </form>
-    <hr>
-    <span>Results for {{ user_state_verbose }}</span>
 </div>
-<div id="results" class="container">
-    {% for veg in user_veg_detail %}
-    <a href="{% url 'FreshPoint:detail' veg.id %}"><div id="vegetable"><b>{{ veg.veg_name }}</b></br><img src="/static/FreshPoint/{{ veg.veg_image}}-190x100.jpg" alt="{{ veg.veg_name }}"></div></a></br>
-    {% endfor %}
+<div id="detail" class="container">
+    <b>{{ veg_detail.veg_name }}</b></br></br>
+    <img src="/static/FreshPoint/{{ veg_detail.veg_image}}-190x100.jpg" alt="{{ veg_detail.veg_name }}"></br></br>
+    {{ veg_detail.veg_desc }}</br>
 </div>

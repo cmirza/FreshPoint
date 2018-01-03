@@ -48,3 +48,11 @@ def results(request):
     context = {'user_state_verbose': user_state_verbose, 'user_veg_detail': user_veg_detail}
 
     return render(request, 'freshpoint/results.html', context)
+
+
+def detail(request, url_key):
+
+    veg_detail = Vegetable.objects.get(id=url_key)
+    context = {'veg_detail': veg_detail}
+
+    return render(request, 'freshpoint/detail.html', context)
