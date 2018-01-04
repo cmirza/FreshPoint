@@ -8,21 +8,6 @@
 <div class="container" id="zip_input">
     <form action="{% url 'FreshPoint:results' %}" method="post">
     {% csrf_token %}
-    Enter your zip code: <input type="text" name="input_zip" id="input_zip"/><button type="submit" id="zip_go" disabled>Go</button>
+    Enter your zip code: <input type="text" name="input_zip" id="input_zip"/><button type="submit" id="zip_go">Go</button>
     </form>
 </div>
-<script>
-    let zip_code = document.querySelector('#input_zip');
-    let zip_go = document.querySelector('#zip_go');
-
-    zip_code.oninput = function() {
-        let pattern = /^[0-9]{5}$/;
-        if (!pattern.test(this.value)) {
-            this.style.outline = '2px solid red';
-            zip_go.disabled = true;
-        } else {
-            this.style.outline = 'none';
-            zip_go.disabled = false;
-        }
-        };
-</script>

@@ -7,28 +7,13 @@
 <div id="zip_input" class="container">
     <form action="{% url 'FreshPoint:results' %}" method="post">
     {% csrf_token %}
-    Enter your zip code: <input type="text" name="input_zip" id="input_zip"/><button type="submit" id="zip_go" disabled>Go</button>
+    Enter your zip code: <input type="text" name="input_zip" id="input_zip"/><button type="submit" id="zip_go">Go</button>
     </form>
     <hr>
     <span>Results for {{ user_state_verbose }}</span>
 </div>
 <div id="results" class="container">
-    {% for veg in user_veg_detail %}
-    <a href="{% url 'FreshPoint:detail' veg.id %}"><div id="vegetable"><h3>{{ veg.veg_name }}</h3></br><img src="/static/FreshPoint/{{ veg.veg_image}}-190x100.jpg" alt="{{ veg.veg_name }}"></div></a></br>
+    {% for veg,alert in user_veg_results %}
+    <a href="{% url 'FreshPoint:detail' veg.id %}"><div id="vegetable"><h3>{{ veg.veg_name }}</h3></br><img src="/static/FreshPoint/{{ veg.veg_image}}-190x100.jpg" alt="{{ veg.veg_name }}"></br>{{ alert }}</div></a></br>
     {% endfor %}
 </div>
-<script>
-    let zip_code = document.querySelector('#input_zip');
-    let zip_go = document.querySelector('#zip_go');
-
-    zip_code.oninput = function() {
-        let pattern = /^[0-9]{5}$/;
-        if (!pattern.test(this.value)) {
-            this.style.outline = '2px solid red';
-            zip_go.disabled = true;
-        } else {
-            this.style.outline = 'none';
-            zip_go.disabled = false;
-        }
-        };
-</script>

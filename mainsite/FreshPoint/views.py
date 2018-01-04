@@ -4,6 +4,7 @@ from .models import Season, State, Vegetable
 from datetime import datetime
 import calendar
 import requests
+import re
 
 
 def index(request):
@@ -19,8 +20,8 @@ def results(request):
     api_response = requests.get('https://maps.googleapis.com/maps/api/geocode/json?components=country:US|postal_code:{0}&key={1}'.format(user_zip, goog_api_key))
     api_response_dict = api_response.json()
 
-    # check if zip code is invalid, render error page if so
-    if api_response_dict['status'] == 'ZERO_RESULTS':
+    # if zip code fails regex or fails Google Geocode, render error page
+    if re.match(r'^(?![0-9]{5}$)', user_zip) or api_response_dict['status'] == 'ZERO_RESULTS':
         message = 'Invalid Zip Code.'
         context = {'message': message}
         return render(request, 'freshpoint/error.html', context)
@@ -47,12 +48,24 @@ def results(request):
     # filter season data by users state and users month id
     user_veg = Season.objects.filter(seasons_state=user_state, seasons__icontains=month_id)
 
-    # create list of relevant vegetables from vegetable model, add verbose state name plus list of vegetable to context
-    # dict and pass to template for rendering
-    user_veg_detail = []
+    # create list for user veg results and alerts results. for each item item in user results, add vegetable object to
+    # user results, turn stringified array into an array of ints, if the next month is in the list create blank entry
+    # in list, otherwise create an alert. then zip the two lists together
+    user_veg_results = []
+    veg_results_alert = []
     for i in user_veg:
-        user_veg_detail.append(Vegetable.objects.get(veg_name=i.seasons_veg))
-    context = {'user_state_verbose': user_state_verbose, 'user_veg_detail': user_veg_detail}
+        user_veg_results.append(Vegetable.objects.get(veg_name=i.seasons_veg))
+        season_array = i.seasons[1:-1]
+        season_array = season_array.split(",")
+        season_array = map(int, season_array)
+        if int(month_id)+1 in season_array:
+            veg_results_alert.append('')
+        else:
+            veg_results_alert.append('Almost Out Of Season!')
+    user_veg_results = zip(user_veg_results, veg_results_alert)
+    print(veg_results_alert)
+
+    context = {'user_state_verbose': user_state_verbose, 'user_veg_results': user_veg_results}
 
     return render(request, 'freshpoint/results.html', context)
 
@@ -81,7 +94,6 @@ def detail(request, url_key):
     for i in veg_seasons:
         if current_season in i.seasons:
             current_states.append([str(i.seasons_state)])
-    print(current_states)
 
     context = {'veg_detail': veg_detail, 'current_states': current_states}
 
