@@ -1,13 +1,14 @@
 {% load static %}
-
-<title>FreshPoint</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="{% static 'FreshPoint/style.css' %}" type="text/css"/>
-<header id="banner">
-    <h1><a href="{% url 'FreshPoint:index' %}"><img src="{% static 'FreshPoint/logo.svg'%}" alt="FreshPoint"></a></h1>
+<title>FreshPoint</title>
+<header class="banner">
+    <a href="{% url 'FreshPoint:index' %}"><img src="{% static 'FreshPoint/logo.svg'%}" alt="FreshPoint"></a>
 </header>
-<div class="container" id="zip_input">
+<div class="zip_input">
     <form action="{% url 'FreshPoint:results' %}" method="post">
     {% csrf_token %}
-    Enter your zip code: <input type="text" name="input_zip" id="input_zip"/><button type="submit" id="zip_go">Go</button>
+    Enter zip code: <input type="text" name="input_zip" id="input_zip"/><button type="submit" id="zip_go">Go</button>
     </form>
 </div>

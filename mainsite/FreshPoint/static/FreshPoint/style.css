@@ -1,61 +1,92 @@
 body {
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: .7em;
     background: #61bb46;
 }
 form {
     margin-bottom: 0;
-}
-h2 {
-    margin-bottom: 0;
-}
-h3 {
-    margin-bottom: 0;
+    color: #919191;
 }
 hr {
-    border: none;
-    color:#000000;
-    background-color:#000000;
-    height:1px;
+	height: 3px;
+	border: 0;
+	box-shadow: 0 3px 3px -3px #bfbebe inset;
 }
 button {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 10px;
     margin-left: 3px;
-    cursor: pointer;
     background-color: white;
-    color: black;
-    border: 1px solid #555555;
+    color: #919191;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px 1px rgba(0,0,0,0.15);
+    outline: none;
 }
-.container {
-    width: 60%;
+button:active {
+    transform: translate(1px,1px);
+    box-shadow: 0 0 0 0 rgba(0,0,0,0.15);
+}
+input {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+.banner {
+    width: 75%;
     margin: 10px auto;
-    padding: 5px 5px 15px 5px;
-    text-align: center;
+    padding: 15px 0 15px 0;
     background: #FFFFFF;
-    box-shadow: 2px 2px;
+    box-shadow: 0 1px 1px 1px rgba(0,0,0,0.15);
+    border-radius: 5px;
 }
-#banner {
-    width: 60%;
+.zip_input {
+    width: 75%;
     margin: 10px auto;
+    padding: 15px 5px 15px 5px;
     background: #FFFFFF;
-    font-size: 1.25em;
-    padding: 5px 5px 5px 5px;
-    box-shadow: 2px 2px;
+    color: #919191;
+    box-shadow: 0 1px 1px 1px rgba(0,0,0,0.15);
+    border-radius: 5px;
 }
-#results {
+.results {
+    width: 75%;
+    margin: 10px auto;
+    padding: 15px 5px 20px 5px;
+    background: #FFFFFF;
+    box-shadow: 0 1px 1px 1px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: row;
     flex-flow: wrap;
     justify-content: center;
+    border-radius: 5px;
 }
-#vegetable {
+.detail {
+    width: 75%;
+    margin: 10px auto;
+    padding: 10px 15px 25px 15px;
+    text-align: center;
+    background: #FFFFFF;
+    color: #919191;
+    box-shadow: 0 1px 1px 1px rgba(0,0,0,0.15);
+    border-radius: 5px;
+}
+.veggies {
     margin: 5px 5px 5px 5px;
+    box-shadow: 0 1px 1px 1px rgba(0,0,0,0.15);
+    max-height: 165px;
+}
+.veg_title {
+    color: #919191;
+    margin-top: 5px;
+}
+.veg_detail_img {
+    border-radius: 5px;
+    width: 50%;
+    height: auto;
 }
 #states_div {
     margin: 0 auto;
-    width: 100px;
+    width: 60%;
 }
