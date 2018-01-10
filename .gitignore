@@ -102,3 +102,5 @@ ENV/
 
 # API Keys
 /mainsite/FreshPoint/local_variables.py
+
+db.sqlite3

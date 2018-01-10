@@ -37,7 +37,7 @@
         </br>
         <p>Here are some ${ veg_name | lowercase }$ recipes:</p>
         <div v-for="recipe in recipes">
-            <span><a v-bind:href="recipe['recipe']['url']" target="_blank">${ recipe['recipe']['label'] }$</a></span>
+            <span><a v-bind:href="recipe['recipe']['url']" target="_blank" style="text-decoration:none;">${ recipe['recipe']['label'] }$</a></span>
         </div>
         </br>
         You can also find ${ veg_name | lowercase }$ currently harvested from these states:
