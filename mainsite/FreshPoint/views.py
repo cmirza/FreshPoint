@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
 from .local_variables import goog_api_key
 from .models import Season, State, Vegetable
 from datetime import datetime
 import calendar
 import requests
 import re
+import json
 
 
 def index(request):
@@ -14,7 +16,7 @@ def index(request):
 def results(request):
 
     # get users zip code
-    user_zip = request.POST['input_zip']
+    user_zip = request.GET['user_zip']
 
     # pass users zip code to Google Geocode, get JSON response, get users state name
     api_response = requests.get('https://maps.googleapis.com/maps/api/geocode/json?components=country:US|postal_code:{0}&key={1}'.format(user_zip, goog_api_key))
@@ -23,8 +25,8 @@ def results(request):
     # if zip code fails regex or fails Google Geocode, render error page
     if re.match(r'^(?![0-9]{5}$)', user_zip) or api_response_dict['status'] == 'ZERO_RESULTS':
         message = 'Invalid Zip Code.'
-        context = {'message': message}
-        return render(request, 'freshpoint/error.html', context)
+        error = {'message': message}
+        return JsonResponse(error)
 
     for i in api_response_dict['results'][0]['address_components']:
         if i['types'] == ["administrative_area_level_1", "political"]:
@@ -48,32 +50,38 @@ def results(request):
     # filter season data by users state and users month id
     user_veg = Season.objects.filter(seasons_state=user_state, seasons__icontains=month_id)
 
-    # create list for user veg results and alerts results. for each item item in user results, add vegetable object to
-    # user results, turn stringified array into an array of ints, if the next month is in the list create blank entry
-    # in list, otherwise create an alert. then zip the two lists together
-    user_veg_results = []
-    veg_results_alert = []
+    # create list for vegetable results and list for user state in verbose and abbreviated format
+    user_veg_result = []
+    user_state_result = [str(user_state_verbose), str(user_state)]
+
+    # iterate over user veg query set and get vegetable object
     for i in user_veg:
-        user_veg_results.append(Vegetable.objects.get(veg_name=i.seasons_veg))
+        veg_object = Vegetable.objects.get(veg_name=i.seasons_veg)
+
+        # check if vegetable is about to go out of season and create an alert
         season_array = i.seasons[1:-1]
         season_array = season_array.split(",")
         season_array = map(int, season_array)
         if int(month_id)+1 in season_array:
-            veg_results_alert.append('')
+            alert = ''
         else:
-            veg_results_alert.append('Almost Out Of Season!')
-    user_veg_results = zip(user_veg_results, veg_results_alert)
-    print(veg_results_alert)
+            alert = 'Almost Out Of Season!'
 
-    context = {'user_state_verbose': user_state_verbose, 'user_veg_results': user_veg_results}
+        # append user_veg_dict with vegetable
+        user_veg_result.append([veg_object.id, veg_object.veg_name, veg_object.veg_image, alert])
 
-    return render(request, 'freshpoint/results.html', context)
+    # create dict for JSON output and return output
+    output = {'state': user_state_result, 'vegetable': user_veg_result}
+    return JsonResponse(output)
 
 
-def detail(request, url_key):
+def detail(request):
+
+    # get requested vegetable
+    vegetable = request.GET['vegetable']
 
     # use url key to get vegetable object from model, add to context dict
-    veg_detail = Vegetable.objects.get(id=url_key)
+    veg_detail = Vegetable.objects.get(id=vegetable)
 
     # get current season id, add leading zero, make it a string
     current_year = datetime.now().year
@@ -88,13 +96,13 @@ def detail(request, url_key):
 
     # create a list for current states, create query set for seasons containing current vegetable
     current_states = [['State']]
-    veg_seasons = Season.objects.filter(seasons_veg=url_key)
+    veg_seasons = Season.objects.filter(seasons_veg=vegetable)
 
     # for each states seasons, if current season is seasons, add that state to current states list
     for i in veg_seasons:
         if current_season in i.seasons:
             current_states.append([str(i.seasons_state)])
 
-    context = {'veg_detail': veg_detail, 'current_states': current_states}
-
-    return render(request, 'freshpoint/detail.html', context)
+    # create
+    output = {'vegetable': [veg_detail.veg_name, veg_detail.veg_image, veg_detail.veg_desc], 'current_states': [current_states]}
+    return JsonResponse(output)

@@ -2,13 +2,138 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="{% static 'FreshPoint/style.css' %}" type="text/css"/>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="{% static 'FreshPoint/local_variables.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
 <title>FreshPoint</title>
 <header class="banner">
     <a href="{% url 'FreshPoint:index' %}"><img src="{% static 'FreshPoint/logo.svg'%}" alt="FreshPoint"></a>
 </header>
-<div class="zip_input">
-    <form action="{% url 'FreshPoint:results' %}" method="post">
-    {% csrf_token %}
-    Enter zip code: <input type="text" name="input_zip" id="input_zip"/><button type="submit" id="zip_go">Go</button>
-    </form>
+
+<div id="app">
+    <div class="zip_input">
+        <span>Enter zip code: </span><input v-on:keyup.enter="getvegetables(userzip)" v-model="userzip"/>
+        <button v-on:click="getvegetables(userzip)">Go</button>
+        <hr v-if="results">
+        <span v-if="results">Results for ${ state }$</span>
+        <hr v-if="warning">
+        <span v-if="warning">Invalid zip code.</span>
+    </div>
+    <div class="results" v-if="results">
+        <div v-for="vegetable in vegetables">
+            <div class="veggies">
+                <div id="vegetable" v-on:click="getdetail(`${ vegetable[0] }`)"><p class="veg_title">${ vegetable[1]
+                    }$</p><img v-bind:src="`/static/FreshPoint/${ vegetable[2] }-190x100.jpg`"></a>
+                    <p class="veg_title">${ vegetable[3] }$</p></div>
+                </br>
+            </div>
+        </div>
+    </div>
+    <div class="detail" v-if="detail">
+        <p style="font-size:1.3em">${ veg_name }$</p>
+        <p><img v-bind:src="`/static/FreshPoint/${ veg_img }-190x100.jpg`" class="veg_detail_img"></p>
+        <p>${ veg_desc }$</p>
+        </br>
+        <p>Here are some ${ veg_name | lowercase }$ recipes:</p>
+        <div v-for="recipe in recipes">
+            <span><a v-bind:href="recipe['recipe']['url']" target="_blank">${ recipe['recipe']['label'] }$</a></span>
+        </div>
+        </br>
+        You can also find ${ veg_name | lowercase }$ currently harvested from these states:
+        <div id="states_div"></div>
+        <p id="go_back" v-on:click="goback()">Go Back</a>
+    </div>
 </div>
+
+<script>
+
+    // create Vue instance
+    new Vue({
+        delimiters: ['${', '}$'],
+        el: '#app',
+        data: {
+            userzip: '',
+            vegetables: '',
+            state: '',
+            veg_name: '',
+            veg_img: '',
+            veg_desc: '',
+            veg_states: '',
+            recipes: '',
+            results: false,
+            detail: false,
+            warning: false
+        },
+        filters: {
+            lowercase(string) {
+                return string.toLowerCase()
+            }
+        },
+        methods: {
+            // method to get zip code from user, validate zip code and return results from server
+            getvegetables: function (userzip) {
+                this.$http.get("{% url 'FreshPoint:results' %}?user_zip=" + userzip).then(function (data) {
+                    if (data['body']['message'] === 'Invalid Zip Code.') {
+                        this.warning = true;
+                        this.results = false;
+                        this.results = false;
+                        this.detail = false;
+                    } else {
+                        this.state = data['body']['state'][0];
+                        this.vegetables = data['body']['vegetable'];
+                        this.results = true;
+                        this.detail = false;
+                        this.warning = false;
+                    }
+                })
+            },
+            // method to get detail on vegetable from server and to draw geochart
+            getdetail: function (vegetable) {
+                this.$http.get("{% url 'FreshPoint:detail' %}?vegetable=" + vegetable).then(function (data) {
+                    this.results = false;
+                    this.detail = true;
+                    this.warning = false;
+                    this.veg_name = data['body']['vegetable'][0];
+                    this.veg_img = data['body']['vegetable'][1];
+                    this.veg_desc = data['body']['vegetable'][2];
+                    this.veg_states = data['body']['current_states'][0];
+
+                    // draw Google GeoCharts choropleth
+                    google.charts.load('current', {
+                        'packages': ['geochart'],
+                        'mapsApiKey': goog_api_key
+                    });
+                    google.charts.setOnLoadCallback(drawStatesMap);
+
+                    let grow_states = this.veg_states;
+
+                    function drawStatesMap() {
+                        let data = google.visualization.arrayToDataTable(grow_states);
+                        let options = {
+                            region: 'US',
+                            displayMode: 'regions',
+                            resolution: 'provinces',
+                            enableRegionInteractivity: false
+                        };
+                        let chart = new google.visualization.GeoChart(document.getElementById('states_div'));
+                        chart.draw(data, options);
+                    }
+
+                    // get recipes from Edamam API
+                    this.$http.get("https://api.edamam.com/search?q="+this.veg_name+"&app_id="+edm_app_id+"&app_key="+edm_app_key+"&to=5").then(function (recipe){
+                        this.recipes = recipe['body']['hits'];
+                        console.log(recipe['body']['hits']);
+                })
+                });
+            },
+            // method to go back to results view
+            goback: function() {
+                this.results = true;
+                this.detail = false;
+                this.warning = false;
+                this.recipes = ''
+            }
+        }
+    });
+</script>
